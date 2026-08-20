@@ -1,0 +1,4 @@
+content,source,sentiment,sentimentScore,customerName,customerEmail,rating
+"The onboarding progress bar is confusing",SURVEY,NEUTRAL,0.50,Carl White,carl@example.com,3
+"Pricing info is not transparent",APP_REVIEW,NEGATIVE,0.25,Mia Flores,mia@example.com,2
+"Loved the live chat response time",SUPPORT_TICKET,POSITIVE,0.92,Alex Zane,alexz@example.com,5

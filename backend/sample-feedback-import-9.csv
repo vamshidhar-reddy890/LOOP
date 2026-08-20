@@ -1,0 +1,4 @@
+content,source,sentiment,sentimentScore,customerName,customerEmail,rating,extraColumn
+"The new help articles are useful",APP_REVIEW,POSITIVE,0.88,Sophia Lee,sophia@example.com,5,ignore me
+"I want dark mode support",SURVEY,NEUTRAL,0.52,Max Brown,max@example.com,4,ignore me
+"It would be great to see custom reports",SUPPORT_TICKET,NEUTRAL,0.58,Maya Chen,maya.c@example.com,4,ignore me

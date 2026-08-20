@@ -1,0 +1,11 @@
+content,source,sentiment,sentimentScore,customerName,customerEmail,rating
+"The system performance has noticeably improved",APP_REVIEW,POSITIVE,0.94,James Hart,james@example.com,5
+"I couldn't reset my password easily",SUPPORT_TICKET,NEGATIVE,0.21,Melanie Cruz,melanie@example.com,2
+"The onboarding checklist is clear",SURVEY,POSITIVE,0.78,Priya Sharma,priya@example.com,4
+"Some error messages are not descriptive",SUPPORT_TICKET,NEUTRAL,0.49,Kaleb Ford,kaleb@example.com,3
+"The mobile layout looks modern and clean",APP_REVIEW,POSITIVE,0.91,Bella Stone,bella@example.com,5
+"More integrations would be useful",SURVEY,NEUTRAL,0.55,Sam O'Neill,sam.oneill@example.com,3
+"I like the new team collaboration features",COMMUNITY_POST,POSITIVE,0.92,Emily Ruiz,emily@example.com,5
+"The export file format could be improved",APP_REVIEW,NEUTRAL,0.60,Noah Garcia,noah.g@example.com,4
+"There's a delay when loading comments",SUPPORT_TICKET,NEGATIVE,0.27,Kira Solis,kira@example.com,2
+"The in-app tour was very helpful",SURVEY,POSITIVE,0.85,Tyler Reed,tyler@example.com,4

@@ -1,0 +1,4 @@
+Content,Source,Sentiment,SentimentScore,CustomerName,CustomerEmail,Rating
+"The mobile app crashes when I use the camera",SUPPORT_TICKET,NEGATIVE,0.10,Jasmine Reed,jasmine@example.com,1
+"The home page loads very fast",APP_REVIEW,POSITIVE,0.94,Paul Norris,paul@example.com,5
+"Need more filter options in reports",SURVEY,NEUTRAL,0.55,Kim Nguyen,kim@example.com,3

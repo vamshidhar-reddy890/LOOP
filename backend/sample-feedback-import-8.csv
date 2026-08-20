@@ -1,0 +1,4 @@
+content,source,sentiment,sentimentScore,customerName,customerEmail,rating
+"Missing refund option made me frustrated",SUPPORT_TICKET,NEGATIVE,0.20,Liam Park,liam@example.com,2
+"A bit hard to understand the new layout",SURVEY,NEUTRAL,0.45,Nora Singh,nora@example.com,
+"Excellent theme suggestions and updates",COMMUNITY_POST,POSITIVE,0.90,Tony Wu,tony@example.com,5

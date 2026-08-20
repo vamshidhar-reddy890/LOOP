@@ -1,0 +1,25 @@
+# Java / Maven
+backend/target/
+backend/uploads/
+
+# Local credentials and test artifacts
+backend/login_test.json
+backend/*.log
+backend/src/main/resources/application-local.properties
+.env
+.env.*
+!.env.example
+
+# Node / Vite
+**/node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# IDE and OS files
+.idea/
+.claude/settings.local.json
+*.iml
+.vscode/*.log
+.DS_Store
+Thumbs.db

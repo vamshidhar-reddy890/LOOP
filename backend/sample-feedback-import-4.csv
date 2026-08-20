@@ -1,0 +1,4 @@
+feedback,source,sentiment,sentimentScore,customer_name,customer_email,rating
+"I love the analytics dashboard layout",APP_REVIEW,POSITIVE,0.91,Noah Reilly,noah@example.com,5
+"Notifications are overwhelming at night",SURVEY,NEGATIVE,0.30,Zara Gomez,zara@example.com,2
+"The tutorial helped me onboard quickly",COMMUNITY_POST,POSITIVE,0.83,Jordan Li,jordan@example.com,4

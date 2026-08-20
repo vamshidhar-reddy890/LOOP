@@ -1,0 +1,4 @@
+content,source,sentiment,sentimentScore,customerName,customerEmail,rating
+"The new search bar is fast and easy to use",APP_REVIEW,POSITIVE,0.95,Olivia Hart,olivia@example.com,5
+"The checkout button is too small on mobile",SURVEY,NEGATIVE,0.22,Eric Kim,eric@example.com,2
+"Customer support replied very quickly",SUPPORT_TICKET,POSITIVE,0.88,Maya Patel,maya@example.com,4

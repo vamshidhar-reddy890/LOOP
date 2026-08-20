@@ -1,0 +1,4 @@
+content,source,sentiment,sentimentScore,customerName,customerEmail,rating
+"The report export feature is great, but I expected more templates",APP_REVIEW,NEUTRAL,0.60,Samira Khan,samira@example.com,4
+"I can't find the settings menu",SUPPORT_TICKET,NEGATIVE,0.18,Leo Carter,leo@example.com,2
+"Great performance and smooth scrolling!",SURVEY,POSITIVE,0.93,Ava Brooks,ava@example.com,5

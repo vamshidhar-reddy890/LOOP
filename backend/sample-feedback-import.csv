@@ -1,0 +1,4 @@
+﻿content,source,sentiment,sentimentScore,customerName,customerEmail,rating
+"Loved the app experience",APP_REVIEW,POSITIVE,0.92,Alex Smith,alex@example.com,5
+"The onboarding flow was confusing",SURVEY,NEUTRAL,0.55,Jamie Lee,jamie@example.com,3
+"Need better support response time",SUPPORT_TICKET,NEGATIVE,0.15,Chris Doe,chris@example.com,2

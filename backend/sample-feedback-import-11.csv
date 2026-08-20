@@ -1,0 +1,4 @@
+content,source,sentiment,sentimentScore,customer_name,customer_email,rating
+"I love the new dashboard, especially the charts",APP_REVIEW,POSITIVE,0.96,Ella Brooks,ella@example.com,5
+"The help articles are outdated",SUPPORT_TICKET,NEGATIVE,0.18,Noah King,noah.k@example.com,2
+"App updates are improving the experience",SURVEY,POSITIVE,0.84,Zoe Adams,zoe@example.com,4

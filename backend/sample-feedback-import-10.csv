@@ -1,0 +1,4 @@
+content,source,sentiment,sentimentScore,customerName,customerEmail,rating
+"Great onboarding tutorial",APP_REVIEW,POSITIVE,0.89,Emma Stone,emma@example.com,5
+"The search results are not relevant",SURVEY,NEGATIVE,0.28,Daniel Cox,daniel@example.com,2
+"Notifications are helpful but too frequent",COMMUNITY_POST,NEUTRAL,0.55,Isla Green,isla@example.com,3
