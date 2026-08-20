@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: loop-backend
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/ai/health
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://loop-frontend.onrender.com
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+  - type: static
+    name: loop-frontend
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://loop-backend.onrender.com/api
