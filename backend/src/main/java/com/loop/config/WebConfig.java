@@ -23,33 +23,22 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Serve static assets with caching
-        registry.addResourceHandler("/assets/**")
-                .addResourceLocations("classpath:/static/assets/")
-                .setCachePeriod(31536000);
-        
-        // Serve other static files and handle SPA routing
+        // Serve static files from the static folder
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver() {
                     @Override
                     protected Resource getResource(String resourcePath, Resource location) throws IOException {
-                        // Try to find the resource
+                        // If the requested resource doesn't exist and it's not an API endpoint,
+                        // redirect to index.html for SPA routing
                         Resource resource = super.getResource(resourcePath, location);
-                        
-                        // If found, return it
-                        if (resource != null && resource.exists()) {
-                            return resource;
+                        if (resource == null || !resource.exists()) {
+                            if (!resourcePath.startsWith("api")) {
+                                return new ClassPathResource("/static/index.html");
+                            }
                         }
-                        
-                        // If not found and not an API call, return index.html for SPA routing
-                        if (!resourcePath.startsWith("api/")) {
-                            return new ClassPathResource("/static/index.html");
-                        }
-                        
-                        // Otherwise return null to let Spring handle 404
-                        return null;
+                        return resource;
                     }
                 });
     }
