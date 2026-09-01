@@ -27,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/index.html",
+                                "/error",
                                 "/favicon.ico",
                                 "/manifest.json",
                                 "/robots.txt",
