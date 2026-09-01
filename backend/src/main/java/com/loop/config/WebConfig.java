@@ -18,27 +18,36 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**").allowedOrigins(frontendUrl).allowedMethods("GET","POST","PUT","DELETE","OPTIONS").allowCredentials(true);
+        registry.addMapping("/api/**")
+                .allowedOrigins(frontendUrl)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true);
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Serve static files from the static folder
+        // Serve static assets with caching
+        registry.addResourceHandler("/assets/**")
+                .addResourceLocations("classpath:/static/assets/")
+                .setCachePeriod(31536000);
+        
+        // Serve static files and handle SPA routing
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/")
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver() {
                     @Override
                     protected Resource getResource(String resourcePath, Resource location) throws IOException {
-                        // If the requested resource doesn't exist and it's not an API endpoint,
-                        // redirect to index.html for SPA routing
-                        Resource resource = super.getResource(resourcePath, location);
-                        if (resource == null || !resource.exists()) {
-                            if (!resourcePath.startsWith("api")) {
-                                return new ClassPathResource("/static/index.html");
-                            }
+                        // Try to find the resource
+                        Resource resource = location.createRelative(resourcePath);
+                        if (resource.exists() && resource.isReadable()) {
+                            return resource;
                         }
-                        return resource;
+                        // For non-API requests, serve index.html for SPA routing
+                        if (!resourcePath.startsWith("api")) {
+                            return new ClassPathResource("/static/index.html");
+                        }
+                        return null;
                     }
                 });
     }

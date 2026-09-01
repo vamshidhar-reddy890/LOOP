@@ -3,6 +3,9 @@ package com.loop.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Controller to handle errors and forward to index.html for SPA routing
+ */
 @Controller
 public class ErrorController {
 
@@ -11,3 +14,6 @@ public class ErrorController {
         return "forward:/index.html";
     }
 }
+
+
+

@@ -23,16 +23,27 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Static assets and frontend files
-                        .requestMatchers("/", "/index.html", "/favicon.ico", "/manifest.json", "/robots.txt", 
-                                         "/assets/**", "/static/**", "/public/**", "/images/**", "/css/**", "/js/**").permitAll()
-                        // Public API routes
+                        // Allow all public static assets
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/favicon.ico",
+                                "/manifest.json",
+                                "/robots.txt",
+                                "/assets/**",
+                                "/static/**",
+                                "/public/**",
+                                "/images/**",
+                                "/css/**",
+                                "/js/**"
+                        ).permitAll()
+                        // Allow public API routes
                         .requestMatchers("/api/auth/**", "/api/public/**").permitAll()
-                        // Documentation
+                        // Allow API documentation
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        // Health check
+                        // Allow health check
                         .requestMatchers("/api/ai/health").permitAll()
-                        // Everything else requires authentication
+                        // Require authentication for all other requests
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -44,3 +55,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+
