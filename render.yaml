@@ -15,8 +15,9 @@ services:
       - key: OPENAI_MODEL
         value: gpt-4.1-mini
 
-  - type: static
+  - type: web
     name: loop-frontend
+    runtime: static
     rootDir: frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
