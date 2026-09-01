@@ -8,10 +8,10 @@ import java.util.List;
 @Service
 public class SentimentAnalysisService {
 
-    private final ClaudeService claudeService;
+    private final OpenAIService openAIService;
 
-    public SentimentAnalysisService(ClaudeService claudeService) {
-        this.claudeService = claudeService;
+    public SentimentAnalysisService(OpenAIService openAIService) {
+        this.openAIService = openAIService;
     }
 
     /**
@@ -22,9 +22,9 @@ public class SentimentAnalysisService {
 
         String userPrompt = "Analyze the sentiment of this customer feedback:\n\n\"" + content + "\"\n\nReturn JSON only.";
 
-        String response = claudeService.sendPromptJson(systemPrompt, userPrompt);
-
         try {
+            if (!openAIService.isConfigured()) return fallbackSentiment(content);
+            String response = openAIService.sendPromptJson(systemPrompt, userPrompt);
             // Parse JSON response
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             com.fasterxml.jackson.databind.JsonNode node = mapper.readTree(response);

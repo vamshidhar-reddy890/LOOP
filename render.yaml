@@ -10,8 +10,10 @@ services:
         generateValue: true
       - key: FRONTEND_URL
         value: https://loop-frontend.onrender.com
-      - key: ANTHROPIC_API_KEY
+      - key: OPENAI_API_KEY
         sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4.1-mini
 
   - type: static
     name: loop-frontend

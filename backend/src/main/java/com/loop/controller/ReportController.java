@@ -1,7 +1,9 @@
 package com.loop.controller;
 
+import com.loop.model.Feedback;
 import com.loop.model.Report;
 import com.loop.model.Workspace;
+import com.loop.repository.FeedbackRepository;
 import com.loop.repository.ReportRepository;
 import com.loop.repository.WorkspaceRepository;
 import org.springframework.http.ResponseEntity;
@@ -9,16 +11,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/reports")
 public class ReportController {
     private final ReportRepository reportRepository;
     private final WorkspaceRepository workspaceRepository;
+    private final FeedbackRepository feedbackRepository;
 
-    public ReportController(ReportRepository reportRepository, WorkspaceRepository workspaceRepository) {
+    public ReportController(ReportRepository reportRepository, WorkspaceRepository workspaceRepository,
+                            FeedbackRepository feedbackRepository) {
         this.reportRepository = reportRepository;
         this.workspaceRepository = workspaceRepository;
+        this.feedbackRepository = feedbackRepository;
     }
 
     @GetMapping
@@ -33,22 +41,65 @@ public class ReportController {
 
     @PostMapping("/generate")
     public ResponseEntity<Report> generate(@RequestBody Map<String, Object> body) {
+        Long workspaceId;
+        LocalDate periodStart;
+        LocalDate periodEnd;
+        try {
+            workspaceId = Long.valueOf(body.get("workspaceId").toString());
+            periodStart = LocalDate.parse(body.get("periodStart").toString());
+            periodEnd = LocalDate.parse(body.get("periodEnd").toString());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (periodEnd.isBefore(periodStart)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Workspace workspace = workspaceRepository.findById(workspaceId).orElse(null);
+        if (workspace == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<Feedback> feedback = feedbackRepository.findByWorkspaceId(workspaceId).stream()
+                .filter(item -> item.getCreatedAt() != null)
+                .filter(item -> {
+                    LocalDate created = item.getCreatedAt().toLocalDate();
+                    return !created.isBefore(periodStart) && !created.isAfter(periodEnd);
+                })
+                .toList();
+        long positive = feedback.stream().filter(item -> "POSITIVE".equalsIgnoreCase(item.getSentiment())).count();
+        long negative = feedback.stream().filter(item -> "NEGATIVE".equalsIgnoreCase(item.getSentiment())).count();
+        String topThemes = feedback.stream()
+                .filter(item -> item.getThemes() != null)
+                .flatMap(item -> item.getThemes().stream())
+                .collect(Collectors.groupingBy(theme -> theme, Collectors.counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder()))
+                .limit(3)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.joining(", "));
+
         Report r = new Report();
-        r.setTitle((String) body.getOrDefault("title", body.getOrDefault("type", "Report")));
-        r.setType((String) body.getOrDefault("type", "WEEKLY"));
-        r.setPeriodStart((String) body.getOrDefault("periodStart", ""));
-        r.setPeriodEnd((String) body.getOrDefault("periodEnd", ""));
-        r.setSummary((String) body.getOrDefault("summary", "Auto-generated report."));
-        // notes: DB column 'insights' is jsonb; avoid inserting a plain string literal which causes a type error
-        // default to null when insights not provided so Hibernate/Postgres won't attempt to cast a string to jsonb
-        // ensure insights has a safe default that matches DB expectations
+        String type = String.valueOf(body.getOrDefault("type", "WEEKLY"));
+        r.setTitle(String.valueOf(body.getOrDefault("title", type + " customer feedback report")));
+        r.setType(type);
+        r.setPeriodStart(periodStart.toString());
+        r.setPeriodEnd(periodEnd.toString());
+        r.setSummary(buildSummary(feedback.size(), positive, negative, topThemes));
         r.setInsights("[]");
         r.setStatus("COMPLETED");
-        Long workspaceId = Long.valueOf(body.getOrDefault("workspaceId", 1).toString());
-        Workspace w = workspaceRepository.findById(workspaceId).orElse(null);
-        r.setWorkspace(w);
+        r.setWorkspace(workspace);
         Report saved = reportRepository.save(r);
         return ResponseEntity.status(201).body(saved);
+    }
+
+    private String buildSummary(int total, long positive, long negative, String topThemes) {
+        if (total == 0) {
+            return "No feedback was recorded for the selected period. Import feedback or choose a period with data to produce insights.";
+        }
+        String themesSentence = topThemes.isBlank() ? "No recurring themes were tagged." : "Top themes: " + topThemes + ".";
+        return String.format("%d feedback items were received: %d positive and %d negative. %s",
+                total, positive, negative, themesSentence);
     }
 
     @GetMapping("/{id}/pdf")

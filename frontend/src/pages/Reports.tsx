@@ -4,18 +4,36 @@ import { useFeedback } from '../context/FeedbackContext';
 import { ReportType } from '../types';
 
 export default function Reports() {
-  const { reports, loadReports, generateReport } = useFeedback();
+  const { reports, workspaces, loadReports, loadWorkspaces, generateReport } = useFeedback();
   const [type, setType] = useState<ReportType>('WEEKLY');
-  const [start, setStart] = useState('2026-07-20');
-  const [end, setEnd] = useState('2026-07-27');
+  const [workspaceId, setWorkspaceId] = useState<number | null>(null);
+  const [start, setStart] = useState('');
+  const [end, setEnd] = useState('');
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     void loadReports();
-  }, [loadReports]);
+    void loadWorkspaces();
+    const today = new Date();
+    const weekAgo = new Date(today);
+    weekAgo.setDate(today.getDate() - 7);
+    setEnd(today.toISOString().slice(0, 10));
+    setStart(weekAgo.toISOString().slice(0, 10));
+  }, [loadReports, loadWorkspaces]);
+
+  useEffect(() => {
+    if (workspaceId === null && workspaces.length > 0) setWorkspaceId(workspaces[0].id);
+  }, [workspaceId, workspaces]);
 
   const handleGenerate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await generateReport(1, type, start, end);
+    if (workspaceId === null) return;
+    try {
+      setSubmitError(null);
+      await generateReport(workspaceId, type, start, end);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Unable to generate the report.');
+    }
   };
 
   return (
@@ -32,6 +50,12 @@ export default function Reports() {
           <div className="flex items-center gap-2 text-primary-400">
             <PlusCircle size={18} />
             <h2 className="text-xl font-semibold text-dark-100">Generate a new report</h2>
+          </div>
+          <div>
+            <label className="mb-2 block text-sm text-dark-300">Workspace</label>
+            <select className="input-field" value={workspaceId ?? ''} onChange={(event) => setWorkspaceId(Number(event.target.value))} required>
+              {workspaces.map((workspace) => <option key={workspace.id} value={workspace.id}>{workspace.name}</option>)}
+            </select>
           </div>
           <div>
             <label className="mb-2 block text-sm text-dark-300">Report type</label>
@@ -51,6 +75,7 @@ export default function Reports() {
               <input className="input-field" type="date" value={end} onChange={(event) => setEnd(event.target.value)} />
             </div>
           </div>
+          {submitError && <p className="text-sm text-red-400">{submitError}</p>}
           <button className="btn-primary w-full" type="submit">
             Generate report
           </button>

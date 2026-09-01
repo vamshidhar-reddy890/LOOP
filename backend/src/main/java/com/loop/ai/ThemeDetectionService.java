@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 @Service
 public class ThemeDetectionService {
 
-    private final ClaudeService claudeService;
+    private final OpenAIService openAIService;
 
-    public ThemeDetectionService(ClaudeService claudeService) {
-        this.claudeService = claudeService;
+    public ThemeDetectionService(OpenAIService openAIService) {
+        this.openAIService = openAIService;
     }
 
     /**
@@ -23,9 +23,9 @@ public class ThemeDetectionService {
 
         String userPrompt = "Extract key themes from this customer feedback:\n\n\"" + content + "\"\n\nReturn JSON array only, e.g., [\"UI Design\", \"Performance\", \"Onboarding\"]";
 
-        String response = claudeService.sendPromptJson(systemPrompt, userPrompt);
-
         try {
+            if (!openAIService.isConfigured()) return fallbackThemes(content);
+            String response = openAIService.sendPromptJson(systemPrompt, userPrompt);
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             com.fasterxml.jackson.databind.JsonNode node = mapper.readTree(response);
 

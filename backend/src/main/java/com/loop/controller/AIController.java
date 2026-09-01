@@ -1,6 +1,6 @@
 package com.loop.controller;
 
-import com.loop.ai.ClaudeService;
+import com.loop.ai.OpenAIService;
 import com.loop.ai.SentimentAnalysisService;
 import com.loop.ai.ThemeDetectionService;
 import com.loop.model.Feedback;
@@ -15,16 +15,16 @@ import java.util.Map;
 @RequestMapping("/api/ai")
 public class AIController {
 
-    private final ClaudeService claudeService;
+    private final OpenAIService openAIService;
     private final SentimentAnalysisService sentimentService;
     private final ThemeDetectionService themeService;
     private final FeedbackRepository feedbackRepository;
 
-    public AIController(ClaudeService claudeService,
+    public AIController(OpenAIService openAIService,
                         SentimentAnalysisService sentimentService,
                         ThemeDetectionService themeService,
                         FeedbackRepository feedbackRepository) {
-        this.claudeService = claudeService;
+        this.openAIService = openAIService;
         this.sentimentService = sentimentService;
         this.themeService = themeService;
         this.feedbackRepository = feedbackRepository;
@@ -146,7 +146,10 @@ public class AIController {
 
         String userPrompt = "Write an executive summary for " + period + " based on this aggregated feedback:\n\n" + feedbackText;
 
-        String summary = claudeService.sendPrompt(systemPrompt, userPrompt);
+        if (!openAIService.isConfigured()) {
+            return ResponseEntity.status(503).body(Map.of("error", "OPENAI_API_KEY is not configured"));
+        }
+        String summary = openAIService.sendPrompt(systemPrompt, userPrompt);
 
         return ResponseEntity.ok(Map.of("summary", summary));
     }
@@ -159,7 +162,7 @@ public class AIController {
         return ResponseEntity.ok(Map.of(
                 "status", "UP",
                 "services", Map.of(
-                        "claude", "configured",
+                        "openai", openAIService.isConfigured() ? "configured" : "not configured",
                         "sentiment", "ready",
                         "themes", "ready"
                 )
