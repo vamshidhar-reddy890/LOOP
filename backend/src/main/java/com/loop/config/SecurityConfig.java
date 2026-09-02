@@ -27,6 +27,13 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/index.html",
+                                "/login",
+                                "/signup",
+                                "/dashboard",
+                                "/feedback",
+                                "/reports",
+                                "/settings",
+                                "/profile",
                                 "/error",
                                 "/favicon.ico",
                                 "/manifest.json",
