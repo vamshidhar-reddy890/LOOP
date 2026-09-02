@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(response.token);
       setUser(response.user);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Unable to login');
+      setError(getAuthError(err, 'Unable to login'));
       throw err;
     } finally {
       setLoading(false);
@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(response.token);
       setUser(response.user);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Unable to sign up');
+      setError(getAuthError(err, 'Unable to sign up'));
       throw err;
     } finally {
       setLoading(false);
@@ -95,6 +95,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+function getAuthError(error: unknown, fallback: string): string {
+  if (axiosErrorIsNetworkError(error)) {
+    return 'The backend is unavailable. Please resume the Render backend service and try again.';
+  }
+  return error instanceof Error ? error.message : fallback;
+}
+
+function axiosErrorIsNetworkError(error: unknown): boolean {
+  return typeof error === 'object' && error !== null && 'isAxiosError' in error &&
+    Boolean((error as { isAxiosError?: boolean }).isAxiosError) &&
+    !('response' in error && (error as { response?: unknown }).response);
 }
 
 export function useAuth() {

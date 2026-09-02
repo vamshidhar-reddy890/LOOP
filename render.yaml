@@ -9,7 +9,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: FRONTEND_URL
-        value: https://loop-frontend.onrender.com
+        value: https://loop-9uia.onrender.com
       - key: OPENAI_API_KEY
         sync: false
       - key: OPENAI_MODEL
